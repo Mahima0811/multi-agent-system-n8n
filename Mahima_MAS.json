@@ -1,0 +1,187 @@
+{
+  "name": "Mahima_MAS",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -464,
+        0
+      ],
+      "id": "d87c3557-244c-4503-921b-9e00606f9ca8",
+      "name": "When chat message received",
+      "webhookId": "cd85fecb-be48-43b1-abd2-c32738e29b79"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a web research agent. Use Tavily MCP to find relevant, reliable information about the user's question.\n\n- Search only for relevant information.\n- Use up to 1 search results per query.\n- Keep the response under 100 words.\n- Do not include your internal reasoning."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -256,
+        0
+      ],
+      "id": "3bd5799b-d397-4244-b30f-6272c0593ab8",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 3
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -128,
+        192
+      ],
+      "id": "773ca005-6765-4640-92a9-145ee22b1617",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a final agent. Give output on user query.",
+        "options": {
+          "systemMessage": "You are a web research agent. Use Tavily MCP to find relevant, reliable information about the user's question.\n\n- Search only for relevant information.\n- Use up to 1 search results per query.\n- Keep the response under 100 words.\n- Do not include your internal reasoning."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        64,
+        0
+      ],
+      "id": "04498b0a-27d4-4b72-910e-b89e36d30373",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        176
+      ],
+      "id": "b647a8dc-90ed-4b71-868d-7a3b80f12955",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "RVg3JnkZXPLHchCI",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "who is leo messi",
+        "searchDepth": "basic",
+        "includeAnswer": "basic",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 2,
+      "position": [
+        128,
+        160
+      ],
+      "id": "ace7ab5c-b1bd-4363-8232-66ba70edd7f6",
+      "name": "Search the web in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "heQtfsxt99Gcqzry",
+          "name": "Tavily account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search the web in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3ea3e65d-94b0-4ac0-9ea8-c24aab2c73e7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f09a7c5a47a0530f214a381f625385bed48250bbc5c3a3174491ef8e83f5958d"
+  },
+  "nodeGroups": [],
+  "id": "A40JnQJdNRmX1F9A",
+  "tags": []
+}
